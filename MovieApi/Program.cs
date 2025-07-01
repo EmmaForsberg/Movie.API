@@ -1,4 +1,7 @@
 
+using Microsoft.EntityFrameworkCore;
+using MovieApi.Data;
+
 namespace MovieApi
 {
     public class Program
@@ -8,6 +11,10 @@ namespace MovieApi
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+
+            builder.Services.AddDbContext<MovieContext>(options =>
+               options.UseSqlServer(builder.Configuration.GetConnectionString("MovieContext") ?? throw new InvalidOperationException("Connection string 'MovieContext' not found.")));
+
 
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
