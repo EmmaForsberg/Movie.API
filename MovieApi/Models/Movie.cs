@@ -10,5 +10,11 @@
 
         //navigation property
         public MovieDetails MovieDetails { get; set; } = null!;
+
+        // 1 - M
+        public ICollection<Review> Reviews { get; set; } = new List<Review>();
+
+        // N-M
+        public ICollection<Actor> Actors { get; set; } = new List<Actor>();
     }
 }
