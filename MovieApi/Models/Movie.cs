@@ -5,10 +5,12 @@
         public int Id { get; set; }
         public string Title { get; set; }    = string.Empty;
         public int Year { get; set; }
-        public string Genre { get; set; } =  string.Empty;
-        public string Duration { get; set; }=   string.Empty;
+        public int Duration { get; set; }
 
-        //navigation property
+        public int GenreId { get; set; }
+        public Genre Genre { get; set; } = null;
+
+        //1-1
         public MovieDetails MovieDetails { get; set; } = null!;
 
         // 1 - M
