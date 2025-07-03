@@ -1,7 +1,7 @@
 ﻿using Bogus;
 using Microsoft.EntityFrameworkCore;
 using MovieApi.Data;
-using MovieApi.Models;
+using MovieApi.Models.Entities;
 using System.Threading;
 using static Bogus.DataSets.Name;
 
