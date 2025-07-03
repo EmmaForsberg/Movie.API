@@ -41,7 +41,7 @@ namespace MovieApi.Extensions
 
             for (int i = 0; i < count; i++)
             {
-                var titel = faker.Commerce.ProductName();
+                var titel = faker.Commerce.Color() + faker.Lorem.Word();
                 var year = faker.Random.Int(1960, 2024);
                 var duration = faker.Random.Int(60, 200);
                 var genre = faker.PickRandom(genres);
