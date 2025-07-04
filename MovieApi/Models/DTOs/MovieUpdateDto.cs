@@ -4,9 +4,6 @@ namespace MovieApi.Models.DTOs
 {
     public class MovieUpdateDto
     {
-        //nästan samma som moviecreatedto men kan ha en id óm du inte sätter det i urlen. samma valideringar som create
-        //Dto för post
-
         public int Id { get; set; } 
 
         [Required]
