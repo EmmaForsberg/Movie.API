@@ -17,6 +17,6 @@
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
 
         // N-M
-        public ICollection<Actor> Actors { get; set; } = new List<Actor>();
+        public ICollection<MovieActor> MovieActors { get; set; } = new List<MovieActor>();
     }
 }

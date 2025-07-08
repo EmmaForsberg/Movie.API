@@ -68,7 +68,7 @@ namespace MovieApi.Extensions
 
             for (int i = 0; i < count; i++)
             {
-            var numberOfMovies = rnd.Next(1, 4);
+                var numberOfMovies = rnd.Next(1, 4);
                 var name = faker.Name.FullName();
                 var birthyear = faker.Random.Int(1960, 2005);
 
@@ -80,11 +80,18 @@ namespace MovieApi.Extensions
 
                 var selectedMovies = faker.PickRandom(movies, numberOfMovies).ToList();
 
-                actor.Movies = selectedMovies;
+                actor.MovieActors = selectedMovies.Select(m => new MovieActor
+                {
+                    Movie = m,
+                    Actor = actor,
+                    Role = "Seeded Role" // valfri text
+                }).ToList();
+
                 actors.Add(actor);
             }
-                return actors;
+            return actors;
         }
+
 
         private static IEnumerable<Genre> GenerateGenres()
         {

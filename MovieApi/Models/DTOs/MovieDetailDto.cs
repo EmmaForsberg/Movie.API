@@ -18,8 +18,8 @@ namespace MovieApi.Models.DTOs
 
         public int Budget { get; set; }
 
-        public ICollection<ReviewDto> ReviewDtos { get; set; } = new List<ReviewDto>();
+        public ICollection<ReviewDto> Reviews { get; set; } = new List<ReviewDto>();
 
-        public ICollection<ActorDto> ActorDtos { get; set; } = new List<ActorDto>();
+        public ICollection<ActorDto> Actors { get; set; } = new List<ActorDto>();
     }
 }

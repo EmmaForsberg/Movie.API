@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using MovieApi.Models.Entities;
+using System.ComponentModel.DataAnnotations;
 
 namespace MovieApi.Models.DTOs
 {
@@ -24,6 +25,7 @@ namespace MovieApi.Models.DTOs
 
         [Required]
         [MinLength(1)]
-        public List<int> ActorIds { get; set; } = new();
+        public List<ActorWithRoleDto> Actors { get; set; } = new();
+
     }
 }
