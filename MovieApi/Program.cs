@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using MovieApi.Data;
 using MovieApi.Extensions;
+using Microsoft.Extensions.DependencyInjection;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace MovieApi
 {
@@ -18,22 +20,26 @@ namespace MovieApi
 
             builder.Services.AddControllers();
 
-
-
+            builder.Services.AddSwaggerGen(opt =>
+            {
+                opt.EnableAnnotations();
+            }
+                );
 
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-            builder.Services.AddOpenApi();
+          //  builder.Services.AddOpenApi();
 
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-                app.MapOpenApi();
+                //app.MapOpenApi();
+                app.UseSwagger();
 
                 app.UseSwaggerUI(options =>
                 {
-                    options.SwaggerEndpoint("/openapi/v1.json", "v1");
+                    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
                 });
                 await app.SeedDataAsync();
             }
