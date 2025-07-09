@@ -13,6 +13,7 @@ namespace MovieApi.Controllers
 {
     [Route("api/movies")]
     [ApiController]
+    [Produces("application/json")]
     public class MoviesController : ControllerBase
     {
         private readonly MovieContext _context;

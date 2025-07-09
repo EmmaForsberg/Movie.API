@@ -8,6 +8,7 @@ namespace MovieApi.Controllers
 
     [Route("api/movies")]
     [ApiController]
+    [Produces("application/json")]
     public class ReviewsController : ControllerBase
     {
 
