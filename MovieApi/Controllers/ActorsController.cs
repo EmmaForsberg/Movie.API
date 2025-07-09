@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MovieApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/movies")]
     [ApiController]
     public class ActorsController : ControllerBase
     {
@@ -16,8 +16,7 @@ namespace MovieApi.Controllers
             _context = context;
         }
 
-        [HttpPost]
-        [Route("/api/movies/{movieId}/actors/{actorId}")]
+        [HttpPost("{movieId}/actors/{actorId}")]
         public async Task<IActionResult> AddMovieToActor(int actorId, int movieId, [FromBody] string role)
         {
             var actor = await _context.Actors
