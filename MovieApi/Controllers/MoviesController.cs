@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MovieApi.Data;
 using MovieApi.Models.DTOs;
@@ -82,24 +77,25 @@ namespace MovieApi.Controllers
                 Actors = m.MovieActors.Select(a => new ActorDto
                 {
                     Name = a.Actor.Name,
-                    BirthYear = a.Actor.BirthYear
+                    BirthYear = a.Actor.BirthYear,
+                    Role = a.Role
                 }).ToList(),
             })
                 .FirstOrDefaultAsync();
 
             if (movie == null)
             {
-                return NotFound();
+                return NotFound(new { message = "Movie not found" });
             }
 
-            return movie;
+            return Ok(movie);
         }
 
 
         // POST: api/Movies
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<MovieDto>> PostMovie(MovieCreateDto dto)
+        public async Task<ActionResult<MovieDetailDto>> PostMovie(MovieCreateDto dto)
         {
             var movie = new Movie
             {
@@ -142,17 +138,26 @@ namespace MovieApi.Controllers
             _context.Movies.Add(movie);
             await _context.SaveChangesAsync();
 
-            var result = new MovieDto
+            var result = new MovieDetailDto
             {
                 Id = movie.Id,
                 Title = movie.Title,
                 Year = movie.Year,
-                GenreName = (await _context.Genres.FindAsync(movie.GenreId))?.Name ?? ""
+                GenreName = (await _context.Genres.FindAsync(movie.GenreId))?.Name ?? "",
+                Synopsis = movie.MovieDetails.Synopsis,
+                Language = movie.MovieDetails.Language,
+                Budget = movie.MovieDetails.Budget,
+                Reviews = new List<ReviewDto>(), // tom vid skapande
+                Actors = movie.MovieActors.Select(ma => new ActorDto
+                {
+                    Name = ma.Actor.Name,
+                    BirthYear = ma.Actor.BirthYear,
+                    Role = ma.Role
+                }).ToList()
             };
 
-            return CreatedAtAction(nameof(GetMovie), new { id = movie.Id }, result);
+            return CreatedAtAction(nameof(GetMovieDetails), new { id = movie.Id }, result);
         }
-
 
         // PUT: api/Movies/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -165,7 +170,8 @@ namespace MovieApi.Controllers
                     .ThenInclude(ma => ma.Actor) // för att komma åt skådespelarna
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (movie == null) return NotFound();
+            if (movie == null)
+                return NotFound(new { message = "Movie not found" });
 
             // Uppdatera filmdata
             movie.Title = dto.Title;
@@ -213,21 +219,19 @@ namespace MovieApi.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMovie(int id)
         {
-            var movie = await _context.Movies.FindAsync(id);
+            var movie = await _context.Movies
+    .Include(m => m.MovieDetails)
+    .Include(m => m.MovieActors)
+    .FirstOrDefaultAsync(m => m.Id == id);
             if (movie == null)
             {
-                return NotFound();
+                return NotFound((new { message = "Movie not found" }));
             }
 
             _context.Movies.Remove(movie);
             await _context.SaveChangesAsync();
 
             return NoContent();
-        }
-
-        private bool MovieExists(int id)
-        {
-            return _context.Movies.Any(e => e.Id == id);
         }
     }
 }
