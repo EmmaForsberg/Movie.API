@@ -20,17 +20,14 @@ namespace MovieApi.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // 1-till-1 mellan Movie och MovieDetails
             modelBuilder.Entity<Movie>()
                 .HasOne(m => m.MovieDetails)
                 .WithOne(md => md.Movie)
                 .HasForeignKey<MovieDetails>(md => md.MovieId);
 
-            // Sätt sammansatt nyckel på MovieActor
             modelBuilder.Entity<MovieActor>()
                 .HasKey(ma => new { ma.MovieId, ma.ActorId });
 
-            // Definiera relationer i MovieActor (frivilligt men rekommenderat)
             modelBuilder.Entity<MovieActor>()
                 .HasOne(ma => ma.Movie)
                 .WithMany(m => m.MovieActors)

@@ -59,29 +59,36 @@ namespace MovieApi.Controllers
         [HttpGet("{id}/details")]
         public async Task<ActionResult<MovieDetailDto>> GetMovieDetails(int id)
         {
-            var movie = await _context.Movies.Where(m => m.Id == id).Select(m => new MovieDetailDto
-            {
-                Id = m.Id,
-                Title = m.Title,
-                Year = m.Year,
-                GenreName = m.Genre.Name,
-                Synopsis = m.MovieDetails.Synopsis,
-                Language = m.MovieDetails.Language,
-                Budget = m.MovieDetails.Budget,
-                Reviews = m.Reviews.Select(r => new ReviewDto
-                {
-                    Name = r.ReviewerName,
-                    Rating = r.Rating,
-                    Comment = r.Comment
-                }).ToList(),
-                Actors = m.MovieActors.Select(a => new ActorDto
-                {
-                    Name = a.Actor.Name,
-                    BirthYear = a.Actor.BirthYear,
-                    Role = a.Role
-                }).ToList(),
-            })
-                .FirstOrDefaultAsync();
+            var movie = await _context.Movies
+     .Include(m => m.Genre)
+     .Include(m => m.Reviews)
+     .Include(m => m.MovieDetails)
+     .Include(m => m.MovieActors)
+     .ThenInclude(ma => ma.Actor)
+     .Where(m => m.Id == id)
+     .Select(m => new MovieDetailDto
+     {
+         Id = m.Id,
+         Title = m.Title,
+         Year = m.Year,
+         GenreName = m.Genre.Name,
+         Synopsis = m.MovieDetails.Synopsis,
+         Language = m.MovieDetails.Language,
+         Budget = m.MovieDetails.Budget,
+         Reviews = m.Reviews.Select(r => new ReviewDto
+         {
+             Name = r.ReviewerName,
+             Rating = r.Rating,
+             Comment = r.Comment
+         }).ToList(),
+         Actors = m.MovieActors.Select(a => new ActorDto
+         {
+             Name = a.Actor.Name,
+             BirthYear = a.Actor.BirthYear,
+             Role = a.Role
+         }).ToList(),
+     })
+     .FirstOrDefaultAsync();
 
             if (movie == null)
             {

@@ -13,7 +13,7 @@ namespace MovieApi.Extensions
 
         internal static async Task InitAsync(MovieContext context)
         {
-            //kollar om det finns filmer
+            // Om det redan finns filmer, gör inget
             if (await context.Movies.AnyAsync()) return;
 
             var genres = GenerateGenres();
@@ -22,17 +22,58 @@ namespace MovieApi.Extensions
 
             var movies = GenerateMovies(20, genres);
             await context.AddRangeAsync(movies);
+            await context.SaveChangesAsync();
 
             GenerateMovieDetails(movies);
+            await context.SaveChangesAsync();
 
-            var actors = GenerateActors(10, movies);
-            await context.AddRangeAsync(actors);
+            var actors = GenerateActors(10,movies);
+            await context.Actors.AddRangeAsync(actors);
+            await context.SaveChangesAsync();
+
+            var movieActors = new List<MovieActor>();
+            var rnd = new Random();
+
+            foreach (var actor in actors)
+            {
+                var numberOfMovies = rnd.Next(1, 4);
+                var selectedMovies = movies.OrderBy(x => rnd.Next()).Take(numberOfMovies);
+
+                foreach (var movie in selectedMovies)
+                {
+                    movieActors.Add(new MovieActor
+                    {
+                        MovieId = movie.Id,
+                        ActorId = actor.Id,
+                        Role = "Seeded Role"
+                    });
+                }
+            }
+
+            var moviesWithoutActors = movies
+                .Where(m => !movieActors.Any(ma => ma.MovieId == m.Id))
+                .ToList();
+
+            foreach (var movie in moviesWithoutActors)
+            {
+                var randomActor = actors[rnd.Next(actors.Count)];
+                movieActors.Add(new MovieActor
+                {
+                    MovieId = movie.Id,
+                    ActorId = randomActor.Id,
+                    Role = "Extra Assigned Role"
+                });
+            }
+
+            await context.Set<MovieActor>().AddRangeAsync(movieActors);
+            await context.SaveChangesAsync();
 
             var reviews = GenerateReviews(movies);
             await context.AddRangeAsync(reviews);
-
             await context.SaveChangesAsync();
         }
+
+
 
         private static IEnumerable<Movie> GenerateMovies(int count, IEnumerable<Genre> genres)
         {
@@ -61,14 +102,12 @@ namespace MovieApi.Extensions
             return movies;
         }
 
-        private static IEnumerable<Actor> GenerateActors(int count, IEnumerable<Movie> movies)
+        private static List<Actor> GenerateActors(int count, IEnumerable<Movie> movies)
         {
-            var rnd = new Random();
             var actors = new List<Actor>();
 
-            for (int i = 0; i < count; i++)
+            foreach (var i in Enumerable.Range(0, count))
             {
-                var numberOfMovies = rnd.Next(1, 4);
                 var name = faker.Name.FullName();
                 var birthyear = faker.Random.Int(1960, 2005);
 
@@ -78,20 +117,11 @@ namespace MovieApi.Extensions
                     BirthYear = birthyear
                 };
 
-                var selectedMovies = faker.PickRandom(movies, numberOfMovies).ToList();
-
-                actor.MovieActors = selectedMovies.Select(m => new MovieActor
-                {
-                    Movie = m,
-                    Actor = actor,
-                    Role = "Seeded Role" // valfri text
-                }).ToList();
-
                 actors.Add(actor);
             }
+
             return actors;
         }
-
 
         private static IEnumerable<Genre> GenerateGenres()
         {
@@ -102,7 +132,7 @@ namespace MovieApi.Extensions
             return genres;
         }
 
-        //denna metod behöver ej vara ienumerable för att den har 1-1 relation med movie
+
         private static void GenerateMovieDetails(IEnumerable<Movie> movies)
         {
             var languages = new List<string> { "English", "Swedish", "French", "Spanish", "German" };

@@ -5,7 +5,6 @@ namespace MovieApi.Extensions
 {
     public static class SeedExtension
     {
-
         public static async Task SeedDataAsync(this IApplicationBuilder app)
         {
 
