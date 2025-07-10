@@ -15,8 +15,6 @@ namespace MovieApi.Models.Entities
         public int MovieId { get; set; }
 
         //Navigation propert
-        public Movie Movie { get; set; }
-
-
+        public Movie? Movie { get; set; }
     }
 }

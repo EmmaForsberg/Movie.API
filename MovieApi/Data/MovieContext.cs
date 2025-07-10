@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MovieApi.Data.Configurations;
 using MovieApi.Models.Entities;
 
 namespace MovieApi.Data
@@ -18,25 +19,14 @@ namespace MovieApi.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.ApplyConfiguration(new ActorConfigurations());
+            modelBuilder.ApplyConfiguration(new GenreConfigurations());
+            modelBuilder.ApplyConfiguration(new MovieActorConfigurations());
+            modelBuilder.ApplyConfiguration(new MovieConfigurations());
+            modelBuilder.ApplyConfiguration(new MovieDetailsConfigurations());
+            modelBuilder.ApplyConfiguration(new ReviewConfigurations());
+
             base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<Movie>()
-                .HasOne(m => m.MovieDetails)
-                .WithOne(md => md.Movie)
-                .HasForeignKey<MovieDetails>(md => md.MovieId);
-
-            modelBuilder.Entity<MovieActor>()
-                .HasKey(ma => new { ma.MovieId, ma.ActorId });
-
-            modelBuilder.Entity<MovieActor>()
-                .HasOne(ma => ma.Movie)
-                .WithMany(m => m.MovieActors)
-                .HasForeignKey(ma => ma.MovieId);
-
-            modelBuilder.Entity<MovieActor>()
-                .HasOne(ma => ma.Actor)
-                .WithMany(a => a.MovieActors)
-                .HasForeignKey(ma => ma.ActorId);
         }
     }
 }
