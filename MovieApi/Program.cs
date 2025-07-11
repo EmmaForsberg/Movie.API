@@ -1,8 +1,8 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
-using MovieApi.Data;
-using MovieApi.Extensions;
 using Microsoft.Extensions.DependencyInjection;
+using MovieApi.Data;
+using MovieApi.Services;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace MovieApi
@@ -24,7 +24,9 @@ namespace MovieApi
             {
                 opt.EnableAnnotations();
             }
-                );
+            );
+
+            builder.Services.AddHostedService<DataSeedHostingservice>();
 
             var app = builder.Build();
 
@@ -39,7 +41,7 @@ namespace MovieApi
                 {
                     options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
                 });
-                await app.SeedDataAsync();
+              //  await app.SeedDataAsync();
             }
 
             app.UseHttpsRedirection();
