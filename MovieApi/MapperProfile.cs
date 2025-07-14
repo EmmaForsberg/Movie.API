@@ -44,7 +44,6 @@ namespace MovieApi
                 .ForMember(dest => dest.Language, opt => opt.MapFrom(src => src.MovieDetails.Language))
                 .ForMember(dest => dest.Budget, opt => opt.MapFrom(src => src.MovieDetails.Budget))
                 .ForMember(dest => dest.Reviews, opt => opt.MapFrom(src => src.Reviews))
-                // Mappa MovieActors till ActorDto-lista via MovieActor mappningen
                 .ForMember(dest => dest.Actors, opt => opt.MapFrom(src => src.MovieActors));
 
             // Mappa ActorWithRoleDto till Actor (vid skapande/uppdatering)

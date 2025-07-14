@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MovieCore.DTOs;
@@ -26,12 +27,12 @@ namespace MovieApi.Controllers
         public async Task<ActionResult<IEnumerable<MovieDto>>> GetMovies()
         {
             var movies = await _context.Movies
-                .Include(m => m.Genre)
+                 .ProjectTo<MovieDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
-            var moviesdto = _mapper.Map<IEnumerable<MovieDto>>(movies);
+            //var moviesdto = _mapper.Map<IEnumerable<MovieDto>>(movies);
 
-            return Ok(moviesdto);
+            return Ok(movies);
         }
 
         // GET: api/Movies/5
@@ -39,36 +40,28 @@ namespace MovieApi.Controllers
         public async Task<ActionResult<MovieDto>> GetMovie(int id)
         {
             var movie = await _context.Movies
-                .Include(m => m.Genre)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                   .Where(m => m.Id == id)
+                   .ProjectTo<MovieDto>(_mapper.ConfigurationProvider)
+                   .FirstOrDefaultAsync();
 
             if (movie == null)
             {
                 return NotFound();
-            }
+            } 
 
-            var movieDto = _mapper.Map<MovieDto>(movie);
-
-            return Ok(movieDto);
+            return Ok(movie);
         }
-
 
         [HttpGet("{id}/details")]
         public async Task<ActionResult<MovieDetailDto>> GetMovieDetails(int id)
         {
-            var movie = await _context.Movies
-            .Include(m => m.Genre)
-            .Include(m => m.Reviews)
-            .Include(m => m.MovieDetails)
-            .Include(m => m.MovieActors).ThenInclude(ma => ma.Actor)
-            .FirstOrDefaultAsync(m => m.Id == id);
+            var dto = await _context.Movies
+                .Where(m => m.Id == id)
+                .ProjectTo<MovieDetailDto>(_mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync();
 
-            if (movie == null)
-            {
-                return NotFound(new { message = "Movie not found" });
-            }
-
-            var dto = _mapper.Map<MovieDetailDto>(movie);
+            if (dto == null)
+                return NotFound();
 
             return Ok(dto);
         }
