@@ -4,7 +4,7 @@ using Bogus;
 using Microsoft.EntityFrameworkCore;
 using MovieCore.Entities;
 using Microsoft.Extensions.DependencyInjection;
-using MovieData;
+using MovieData.Data;
 
 namespace MovieData.Services
 {

@@ -2,7 +2,7 @@
 using MovieApi.Data;
 using MovieCore.Entities;
 using Microsoft.EntityFrameworkCore;
-using MovieData;
+using MovieData.Data;
 
 namespace MovieApi.Controllers
 {

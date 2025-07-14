@@ -2,7 +2,7 @@
 using MovieApi.Data.Configurations;
 using MovieCore.Entities;
 
-namespace MovieData
+namespace MovieData.Data
 {
     public class MovieContext : DbContext
     {

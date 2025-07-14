@@ -3,8 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MovieApi.Data;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using MovieData;
 using MovieData.Services;
+using MovieData.Data;
 
 namespace MovieApi
 {
