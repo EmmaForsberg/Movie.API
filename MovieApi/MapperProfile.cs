@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using MovieCore.DTOs;
 using MovieCore.Entities;       // för MovieDetails, Review etc.
-using MovieApi.Models.DTOs;      // dina DTO-klasser
 
 
 namespace MovieApi
@@ -49,6 +49,9 @@ namespace MovieApi
 
             // Mappa ActorWithRoleDto till Actor (vid skapande/uppdatering)
             CreateMap<ActorWithRoleDto, Actor>();
+
+            CreateMap<MovieActorCreateDto, MovieActor>();
+
         }
 
     }

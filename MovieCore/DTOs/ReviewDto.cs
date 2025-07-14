@@ -1,5 +1,5 @@
-﻿namespace MovieApi.Models.DTOs
-{
+﻿namespace MovieCore.DTOs
+{ 
     public class ReviewDto
     {
         public string Name { get; set; } = string.Empty;

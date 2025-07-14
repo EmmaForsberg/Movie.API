@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MovieApi.Data;
-using MovieApi.Models.DTOs;
+using MovieCore.DTOs;
 using MovieData.Data;
 
 namespace MovieApi.Controllers
@@ -14,12 +14,13 @@ namespace MovieApi.Controllers
     {
 
         private readonly MovieContext _context;
+        private readonly IMapper _mapper;
 
-        public ReviewsController(MovieContext context)
+        public ReviewsController(MovieContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
-
         [HttpGet]
         public async Task<ActionResult<List<ReviewDto>>> GetReviewsForMovie(int movieId)
         {
@@ -29,16 +30,13 @@ namespace MovieApi.Controllers
 
             var reviews = await _context.Reviews
                .Where(r => r.MovieId == movieId)
-               .Select(r => new ReviewDto
-               {
-                   Name = r.ReviewerName,
-                   Comment = r.Comment,
-                   Rating = r.Rating
-               }).ToListAsync();
+               .ToListAsync();
 
-            return Ok(reviews);
+            var reviewDtos = _mapper.Map<List<ReviewDto>>(reviews);
 
+            return Ok(reviewDtos);
         }
+
 
     }
 }

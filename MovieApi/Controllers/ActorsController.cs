@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MovieApi.Data;
-using MovieCore.Entities;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MovieApi.Data;
+using MovieCore.DTOs;
+using MovieCore.Entities;
 using MovieData.Data;
 
 namespace MovieApi.Controllers
@@ -12,14 +14,16 @@ namespace MovieApi.Controllers
     public class ActorsController : ControllerBase
     {
         private readonly MovieContext _context;
+        private readonly IMapper _mapper;
 
-        public ActorsController(MovieContext context)
+        public ActorsController(MovieContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         [HttpPost("{movieId}/actors/{actorId}")]
-        public async Task<IActionResult> AddMovieToActor(int actorId, int movieId, [FromBody] string role)
+        public async Task<IActionResult> AddMovieToActor(int actorId, int movieId, [FromBody] MovieActorCreateDto dto)
         {
             var actor = await _context.Actors
                 .Include(a => a.MovieActors)
@@ -32,12 +36,11 @@ namespace MovieApi.Controllers
             if (actor.MovieActors.Any(ma => ma.MovieId == movieId))
                 return BadRequest("Movie already linked to this actor.");
 
-            actor.MovieActors.Add(new MovieActor
-            {
-                ActorId = actorId,
-                MovieId = movieId,
-                Role = role ?? ""
-            });
+            var movieActor = _mapper.Map<MovieActor>(dto);
+            movieActor.ActorId = actorId;
+            movieActor.MovieId = movieId;
+
+            actor.MovieActors.Add(movieActor);
 
             await _context.SaveChangesAsync();
 

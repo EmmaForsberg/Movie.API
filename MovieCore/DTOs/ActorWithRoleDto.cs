@@ -1,4 +1,4 @@
-﻿namespace MovieApi.Models.DTOs
+﻿namespace MovieCore.DTOs
 {
     public class ActorWithRoleDto
     {
