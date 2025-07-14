@@ -7,7 +7,7 @@ using MovieData;
 namespace MovieApi.Controllers
 {
 
-    [Route("api/movies")]
+    [Route("api/movies{movieId}/reviews")]
     [ApiController]
     [Produces("application/json")]
     public class ReviewsController : ControllerBase
@@ -20,7 +20,7 @@ namespace MovieApi.Controllers
             _context = context;
         }
 
-        [HttpGet("{movieId}/reviews")]
+        [HttpGet]
         public async Task<ActionResult<List<ReviewDto>>> GetReviewsForMovie(int movieId)
         {
             var movie = await _context.Movies.FindAsync(movieId);
