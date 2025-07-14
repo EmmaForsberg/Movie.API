@@ -70,8 +70,6 @@ namespace MovieApi.Services
             _logger.LogInformation("Seeding klar.");
         }
 
-        public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
-
         // ----------------------
         // 👇 Seed-metod
         private static IEnumerable<Movie> GenerateMovies(int count, IEnumerable<Genre> genres)
@@ -217,6 +215,8 @@ namespace MovieApi.Services
 
             return result;
         }
+        public Task StopAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+
 
     }
 
