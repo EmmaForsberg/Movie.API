@@ -7,7 +7,7 @@ using MovieData;
 namespace MovieApi.Controllers
 {
 
-    [Route("api/movies{movieId}/reviews")]
+    [Route("api/movies/{movieId}/reviews")]
     [ApiController]
     [Produces("application/json")]
     public class ReviewsController : ControllerBase
