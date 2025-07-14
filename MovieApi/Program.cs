@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MovieApi.Data;
+using AutoMapper;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using MovieData.Services;
 using MovieData.Data;
@@ -18,6 +19,9 @@ namespace MovieApi
 
             builder.Services.AddDbContext<MovieContext>(options =>
                options.UseSqlServer(builder.Configuration.GetConnectionString("MovieContext") ?? throw new InvalidOperationException("Connection string 'MovieContext' not found.")));
+
+            builder.Services.AddAutoMapper(cfg => cfg.AddProfile<MapperProfile>());
+
 
             builder.Services.AddControllers();
 

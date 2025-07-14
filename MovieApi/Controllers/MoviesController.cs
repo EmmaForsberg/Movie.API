@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MovieApi.Data;
 using MovieApi.Models.DTOs;
@@ -13,10 +14,13 @@ namespace MovieApi.Controllers
     public class MoviesController : ControllerBase
     {
         private readonly MovieContext _context;
+        private readonly IMapper _mapper;
 
-        public MoviesController(MovieContext context)
+
+        public MoviesController(MovieContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -27,9 +31,13 @@ namespace MovieApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MovieDto>>> GetMovies()
         {
-            var result = await _context.Movies.Select(m => new MovieDto { Id = m.Id, Title = m.Title, Year = m.Year, GenreName = m.Genre.Name, }).ToListAsync();
+            var movies = await _context.Movies
+                .Include(m => m.Genre) 
+                .ToListAsync();
 
-            return Ok(result);
+            var moviesdto= _mapper.Map<IEnumerable<MovieDto>>(movies);
+
+            return Ok(moviesdto);
         }
 
 
