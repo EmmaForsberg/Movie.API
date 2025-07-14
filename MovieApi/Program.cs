@@ -2,8 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MovieApi.Data;
-using MovieApi.Services;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using MovieData;
+using MovieData.Services;
 
 namespace MovieApi
 {
@@ -20,13 +21,15 @@ namespace MovieApi
 
             builder.Services.AddControllers();
 
+            builder.Services.AddEndpointsApiExplorer();
+
             builder.Services.AddSwaggerGen(opt =>
             {
                 opt.EnableAnnotations();
             }
             );
 
-            builder.Services.AddHostedService<DataSeedHostingservice>();
+            builder.Services.AddHostedService<DataSeedHostingService>();
 
             var app = builder.Build();
 

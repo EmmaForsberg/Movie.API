@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MovieApi.Models.Entities
+namespace MovieCore.Entities
+
 {
     public class MovieDetails
     {
