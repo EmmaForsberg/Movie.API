@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MovieCore.DTOs;
@@ -27,41 +26,49 @@ namespace MovieApi.Controllers
         public async Task<ActionResult<IEnumerable<MovieDto>>> GetMovies()
         {
             var movies = await _context.Movies
-                 .ProjectTo<MovieDto>(_mapper.ConfigurationProvider)
+                .Include(m => m.Genre)
                 .ToListAsync();
 
-            //var moviesdto = _mapper.Map<IEnumerable<MovieDto>>(movies);
+            var moviesdto = _mapper.Map<IEnumerable<MovieDto>>(movies);
 
-            return Ok(movies);
+            return Ok(moviesdto);
         }
+
 
         // GET: api/Movies/5
         [HttpGet("{id}")]
         public async Task<ActionResult<MovieDto>> GetMovie(int id)
         {
             var movie = await _context.Movies
-                   .Where(m => m.Id == id)
-                   .ProjectTo<MovieDto>(_mapper.ConfigurationProvider)
-                   .FirstOrDefaultAsync();
+                .Include(m => m.Genre)
+                .FirstOrDefaultAsync(m => m.Id == id);
 
             if (movie == null)
             {
                 return NotFound();
-            } 
+            }
 
-            return Ok(movie);
+            var movieDto = _mapper.Map<MovieDto>(movie);
+
+            return Ok(movieDto);
         }
 
         [HttpGet("{id}/details")]
         public async Task<ActionResult<MovieDetailDto>> GetMovieDetails(int id)
         {
-            var dto = await _context.Movies
-                .Where(m => m.Id == id)
-                .ProjectTo<MovieDetailDto>(_mapper.ConfigurationProvider)
-                .FirstOrDefaultAsync();
+            var movie = await _context.Movies
+            .Include(m => m.Genre)
+            .Include(m => m.Reviews)
+            .Include(m => m.MovieDetails)
+            .Include(m => m.MovieActors).ThenInclude(ma => ma.Actor)
+            .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (dto == null)
-                return NotFound();
+            if (movie == null)
+            {
+                return NotFound(new { message = "Movie not found" });
+            }
+
+            var dto = _mapper.Map<MovieDetailDto>(movie);
 
             return Ok(dto);
         }
@@ -75,28 +82,6 @@ namespace MovieApi.Controllers
             var movie = _mapper.Map<Movie>(dto);
 
             movie.MovieActors = new List<MovieActor>();
-
-            foreach (var actorDto in dto.Actors)
-            {
-                var actor = await _context.Actors
-                    .FirstOrDefaultAsync(a => a.Name == actorDto.Name && a.BirthYear == actorDto.BirthYear);
-
-                if (actor == null)
-                {
-                    actor = new Actor
-                    {
-                        Name = actorDto.Name,
-                        BirthYear = actorDto.BirthYear
-                    };
-                    _context.Actors.Add(actor);
-                }
-
-                movie.MovieActors.Add(new MovieActor
-                {
-                    Actor = actor,
-                    Role = actorDto.Role
-                });
-            }
 
             _context.Movies.Add(movie);
             await _context.SaveChangesAsync();
@@ -112,7 +97,11 @@ namespace MovieApi.Controllers
 
             var result = _mapper.Map<MovieDetailDto>(savedMovie);
 
-            return CreatedAtAction(nameof(GetMovieDetails), new { id = result.Id }, result);
+
+            return CreatedAtAction(nameof(GetMovieDetails), new
+            {
+                id = result.Id
+            }, result);
         }
 
 
