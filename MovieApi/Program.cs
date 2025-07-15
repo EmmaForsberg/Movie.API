@@ -1,9 +1,5 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using MovieApi.Data;
-using AutoMapper;
-using Swashbuckle.AspNetCore.SwaggerGen;
 using MovieData.Services;
 using MovieData.Data;
 
@@ -11,7 +7,7 @@ namespace MovieApi
 {
     public class Program
     {
-        public static async Task Main(string[] args)
+        public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +19,9 @@ namespace MovieApi
             builder.Services.AddAutoMapper(cfg => cfg.AddProfile<MapperProfile>());
 
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers()
+            .AddNewtonsoftJson();
+          
 
             builder.Services.AddEndpointsApiExplorer();
 

@@ -3,19 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace MovieCore.DTOs
 {
-    public class MovieCreateDto
+    public class MovieCreateDto : MovieBaseDto
     {
-        //Dto för post
-        [Required]
-        [StringLength(100)]
-        public string Title { get; set; } = string.Empty;
-
-        [Range(1900,2025)]
-        public int Year { get; set; }
-
-        [Range(1,300)]
-        public int Duration { get; set; }
-
         [Required]
         public int GenreId { get; set; }
 

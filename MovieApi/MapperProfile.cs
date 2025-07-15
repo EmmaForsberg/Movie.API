@@ -31,7 +31,9 @@ namespace MovieApi
             CreateMap<MovieCreateDto, Movie>();
 
             // Mappa MovieUpdateDto -> Movie (vid uppdatering)
-            CreateMap<MovieUpdateDto, Movie>();
+            CreateMap<MovieUpdateDto, Movie>()
+             .ForMember(dest => dest.Id, opt => opt.Ignore());
+
 
             // Mappa Review -> ReviewDto
             CreateMap<Review, ReviewDto>()
