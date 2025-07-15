@@ -25,7 +25,7 @@ namespace MovieCore.DTOs
 
         [Required]
         [MinLength(1)]
-        public List<ActorWithRoleDto> Actors { get; set; } = new();
+        public ICollection<ActorWithRoleDto> Actors { get; set; } = [];
 
     }
 }
