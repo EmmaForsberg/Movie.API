@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MovieCore.DomainContracts;
 using MovieCore.DTOs;
 using MovieCore.Entities;
 using MovieData.Data;
+using MovieData.Data.Repositories;
 
 namespace MovieApi.Controllers
 {
@@ -12,26 +14,24 @@ namespace MovieApi.Controllers
     [Produces("application/json")]
     public class MoviesController : ControllerBase
     {
-        private readonly MovieContext _context;
+        //private readonly MovieContext _context;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
 
-        public MoviesController(MovieContext context, IMapper mapper)
+        public MoviesController(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _context = context;
+           // _context = context;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MovieDto>>> GetMovies()
         {
-            var movies = await _context.Movies
-                .Include(m => m.Genre)
-                .ToListAsync();
-
-            var moviesdto = _mapper.Map<IEnumerable<MovieDto>>(movies);
-
-            return Ok(moviesdto);
+            var movies = await _unitOfWork.MovieRepository.GetAllAsync();
+            var moviesDto = _mapper.Map<IEnumerable<MovieDto>>(movies);
+            return Ok(moviesDto);
         }
 
 
@@ -39,9 +39,7 @@ namespace MovieApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<MovieDto>> GetMovie(int id)
         {
-            var movie = await _context.Movies
-                .Include(m => m.Genre)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var movie = await _unitOfWork.MovieRepository.GetAsync(id);
 
             if (movie == null)
             {
@@ -56,20 +54,12 @@ namespace MovieApi.Controllers
         [HttpGet("{id}/details")]
         public async Task<ActionResult<MovieDetailDto>> GetMovieDetails(int id)
         {
-            var movie = await _context.Movies
-            .Include(m => m.Genre)
-            .Include(m => m.Reviews)
-            .Include(m => m.MovieDetails)
-            .Include(m => m.MovieActors).ThenInclude(ma => ma.Actor)
-            .FirstOrDefaultAsync(m => m.Id == id);
+            var movie = await _unitOfWork.MovieRepository.GetMovieWithDetailsAsync(id);
 
             if (movie == null)
-            {
                 return NotFound(new { message = "Movie not found" });
-            }
 
             var dto = _mapper.Map<MovieDetailDto>(movie);
-
             return Ok(dto);
         }
 
@@ -80,61 +70,37 @@ namespace MovieApi.Controllers
         public async Task<ActionResult<MovieDetailDto>> PostMovie(MovieCreateDto dto)
         {
             var movie = _mapper.Map<Movie>(dto);
-
             movie.MovieActors = new List<MovieActor>();
 
-            _context.Movies.Add(movie);
-            await _context.SaveChangesAsync();
-
-            // Hämta igen för att säkerställa att navigation properties är laddade
-            var savedMovie = await _context.Movies
-                .Include(m => m.Genre)
-                .Include(m => m.MovieDetails)
-                .Include(m => m.Reviews)
-                .Include(m => m.MovieActors)
-                    .ThenInclude(ma => ma.Actor)
-                .FirstOrDefaultAsync(m => m.Id == movie.Id);
+            var savedMovie = await _unitOfWork.MovieRepository.AddAsync(movie);
 
             var result = _mapper.Map<MovieDetailDto>(savedMovie);
 
-
-            return CreatedAtAction(nameof(GetMovieDetails), new
-            {
-                id = result.Id
-            }, result);
+            return CreatedAtAction(nameof(GetMovieDetails), new { id = result.Id }, result);
         }
-
-
 
         // PUT: api/Movies/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateMovie(int id, MovieUpdateDto dto)
         {
-            var movie = await _context.Movies
-                .Include(m => m.MovieDetails)
-                .Include(m => m.MovieActors)
-                    .ThenInclude(ma => ma.Actor)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var movie = await _unitOfWork.MovieRepository.GetMovieWithDetailsAsync(id);
 
             if (movie == null)
                 return NotFound(new { message = "Movie not found" });
 
-            // Mappa enkla egenskaper direkt från dto till movie
             _mapper.Map(dto, movie);
 
-            // Uppdatera MovieDetails (kan mappas också om du vill)
             movie.MovieDetails.Language = dto.MovieDetails.Language;
             movie.MovieDetails.Synopsis = dto.MovieDetails.Synopsis;
             movie.MovieDetails.Budget = dto.MovieDetails.Budget;
 
-            // Uppdatera MovieActors (manuellt eftersom det är en join-tabell)
             movie.MovieActors.Clear();
 
             foreach (var actorDto in dto.Actors)
             {
-                var actor = await _context.Actors
-                    .FirstOrDefaultAsync(a => a.Name == actorDto.Name && a.BirthYear == actorDto.BirthYear);
+                var actor = await _unitOfWork.ActorRepository
+                    .GetByNameAndBirthYearAsync(actorDto.Name, actorDto.BirthYear);
 
                 if (actor == null)
                 {
@@ -143,7 +109,7 @@ namespace MovieApi.Controllers
                         Name = actorDto.Name,
                         BirthYear = actorDto.BirthYear
                     };
-                    _context.Actors.Add(actor);
+                    _unitOfWork.ActorRepository.Add(actor);
                 }
 
                 movie.MovieActors.Add(new MovieActor
@@ -153,28 +119,29 @@ namespace MovieApi.Controllers
                 });
             }
 
-            await _context.SaveChangesAsync();
+            _unitOfWork.MovieRepository.Update(movie);
+
+            await _unitOfWork.CompleteAsync(); 
+
             return NoContent();
         }
+
 
 
         // DELETE: api/Movies/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMovie(int id)
         {
-            var movie = await _context.Movies
-    .Include(m => m.MovieDetails)
-    .Include(m => m.MovieActors)
-    .FirstOrDefaultAsync(m => m.Id == id);
-            if (movie == null)
-            {
-                return NotFound((new { message = "Movie not found" }));
-            }
+            var movie = await _unitOfWork.MovieRepository.GetMovieForDeleteAsync(id);
 
-            _context.Movies.Remove(movie);
-            await _context.SaveChangesAsync();
+            if (movie == null)
+                return NotFound(new { message = "Movie not found" });
+
+            _unitOfWork.MovieRepository.Remove(movie);
+            await _unitOfWork.CompleteAsync();
 
             return NoContent();
         }
+
     }
 }

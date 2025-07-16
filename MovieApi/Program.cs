@@ -1,7 +1,10 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
-using MovieData.Services;
+using MovieCore.DomainContracts;
 using MovieData.Data;
+using MovieData.Data.Repositories;
+
+using MovieData.Services;
 
 namespace MovieApi
 {
@@ -19,9 +22,14 @@ namespace MovieApi
             builder.Services.AddAutoMapper(cfg => cfg.AddProfile<MapperProfile>());
 
 
+            builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<IMovieRepository, MovieRepository>();
+            builder.Services.AddScoped<IActorRepository, ActorRepository>();
+            builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+
             builder.Services.AddControllers()
             .AddNewtonsoftJson();
-          
+
 
             builder.Services.AddEndpointsApiExplorer();
 
@@ -46,7 +54,7 @@ namespace MovieApi
                 {
                     options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
                 });
-              //  await app.SeedDataAsync();
+                //  await app.SeedDataAsync();
             }
 
             app.UseHttpsRedirection();
