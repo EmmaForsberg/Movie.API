@@ -1,4 +1,4 @@
-﻿using MovieCore.DomainContracts;
+﻿using MovieContracts;
 
 namespace MovieData.Data.Repositories
 {

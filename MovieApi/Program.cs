@@ -1,12 +1,12 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
-using MovieApi.Service.Contracts;
-using MovieApi.Services;
-using MovieCore.DomainContracts;
+using MovieContracts;
 using MovieData.Data;
 using MovieData.Data.Repositories;
 
 using MovieData.Services;
+using MovieServiceContracts.Service.Contracts;
+using MovieServices.Services;
 
 namespace MovieApi
 {

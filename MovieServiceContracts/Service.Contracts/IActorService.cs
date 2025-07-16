@@ -1,6 +1,6 @@
 ﻿using MovieCore.DTOs;
 
-namespace MovieApi.Service.Contracts
+namespace MovieServiceContracts.Service.Contracts
 {
     public interface IActorService
     {

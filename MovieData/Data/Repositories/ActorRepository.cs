@@ -1,11 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MovieCore.DomainContracts;
+using MovieContracts;
 using MovieCore.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MovieData.Data.Repositories
 {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MovieApi.Service.Contracts;
+using MovieContracts;
 using MovieCore.DTOs;
+using MovieServiceContracts.Service.Contracts;
 
 namespace MovieApi.Controllers
 {

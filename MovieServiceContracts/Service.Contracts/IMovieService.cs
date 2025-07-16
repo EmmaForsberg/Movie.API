@@ -1,7 +1,6 @@
-﻿
-using MovieCore.DTOs;
+﻿using MovieCore.DTOs;
 
-namespace MovieApi.Service.Contracts
+namespace MovieServiceContracts.Service.Contracts
 {
     public interface IMovieService
     {

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using MovieCore.Entities;
 
 
-namespace MovieApi.Data.Configurations
+namespace MovieData.Configurations
 {
     public class ReviewConfigurations : IEntityTypeConfiguration<Review>
     {

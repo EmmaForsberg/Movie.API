@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MovieCore.DomainContracts
+namespace MovieContracts
 {
     public interface IUnitOfWork
     {

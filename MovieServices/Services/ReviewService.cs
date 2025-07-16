@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
-using MovieApi.Service.Contracts;
-using MovieCore.DomainContracts;
+using MovieContracts;
 using MovieCore.DTOs;
+using MovieServiceContracts.Service.Contracts;
 
-namespace MovieApi.Services
+namespace MovieServices.Services
 {
     public class ReviewService : IReviewService
     {

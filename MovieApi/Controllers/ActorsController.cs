@@ -1,14 +1,7 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using MovieApi.Data;
-using MovieApi.Service.Contracts;
-using MovieApi.Services;
-using MovieCore.DomainContracts;
+﻿using Microsoft.AspNetCore.Mvc;
+using MovieContracts;
 using MovieCore.DTOs;
-using MovieCore.Entities;
-using MovieData.Data;
-using MovieData.Data.Repositories;
+using MovieServiceContracts.Service.Contracts;
 
 namespace MovieApi.Controllers
 {

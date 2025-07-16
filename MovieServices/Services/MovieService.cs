@@ -1,11 +1,10 @@
 ﻿using AutoMapper;
-using MovieApi.Service.Contracts;
-using MovieCore.DomainContracts;
+using MovieContracts;
 using MovieCore.DTOs;
 using MovieCore.Entities;
-using MovieData.Data.Repositories;
+using MovieServiceContracts.Service.Contracts;
 
-namespace MovieApi.Services
+namespace MovieServices.Services
 {
     public class MovieService : IMovieService
     {
@@ -32,7 +31,7 @@ namespace MovieApi.Services
 
         public async Task<MovieDetailDto?> GetMovieDetailsAsync(int id)
         {
-           var movie = await uow.MovieRepository.GetMovieWithDetailsAsync(id);
+            var movie = await uow.MovieRepository.GetMovieWithDetailsAsync(id);
             return mapper.Map<MovieDetailDto>(movie);
         }
 
