@@ -1,5 +1,7 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
+using MovieApi.Service.Contracts;
+using MovieApi.Services;
 using MovieCore.DomainContracts;
 using MovieData.Data;
 using MovieData.Data.Repositories;
@@ -23,6 +25,10 @@ namespace MovieApi
 
 
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddScoped<IServiceManager, ServiceManager>();
+
+
+
             builder.Services.AddScoped<IMovieRepository, MovieRepository>();
             builder.Services.AddScoped<IActorRepository, ActorRepository>();
             builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
@@ -47,7 +53,7 @@ namespace MovieApi
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
-
+                app.UseDeveloperExceptionPage();
                 app.UseSwagger();
 
                 app.UseSwaggerUI(options =>
