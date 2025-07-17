@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using MovieContracts;
 using MovieCore.DTOs;
 using MovieCore.Helpers;
 using MovieServiceContracts.Service.Contracts;
@@ -19,15 +18,20 @@ namespace MovieApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<PagedResult<MovieDto>>> GetMovies([FromQuery]string? name, string? searchQuery, int pageNumber =1, int pageSize = 10)
+        public async Task<ActionResult<PagedResult<MovieDto>>> GetMovies(
+      [FromQuery] string? name,
+      [FromQuery] string? searchQuery,
+      [FromQuery] PagingParameters pagingParameters)
         {
-            if (pageSize > 100)
-                pageSize = 100;
+            var moviesDto = await serviceManager.MovieService.GetMoviesAsync(
+                name,
+                searchQuery,
+                pagingParameters.PageNumber,
+                pagingParameters.PageSize);
 
-            var moviesdto = await serviceManager.MovieService.GetMoviesAsync(name, searchQuery,pageNumber,pageSize);
-
-            return Ok(moviesdto);
+            return Ok(moviesDto);
         }
+
 
         // GET: api/Movies/5
         [HttpGet("{id}")]

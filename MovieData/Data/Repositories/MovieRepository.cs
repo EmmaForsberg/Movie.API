@@ -82,20 +82,32 @@ namespace MovieData.Data.Repositories
             _context.Movies.Remove(movie);
         }
 
-        public async Task<int> CountTotalItemsAsync()
+        public async Task<List<Movie>> GetPagedMoviesAsync(int pageNumber, int pageSize, string? searchQuery)
         {
-           return await _context.Movies.CountAsync();
+            var query = _context.Movies.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(searchQuery))
+            {
+                query = query.Where(m => m.Title.ToLower().Contains(searchQuery.ToLower()));
+            }
+
+            return await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
         }
 
-        public async Task<List<Movie>> GetPagedMoviesAsync(int pageNumber, int pageSize)
+        public async Task<int> CountTotalItemsAsync(string? searchQuery)
         {
-            int skipAmount = (pageNumber - 1) * pageSize;
+            var query = _context.Movies.AsQueryable();
 
-            return await _context.Movies
-               .Include(m => m.Genre)
-               .Skip(skipAmount)
-               .Take(pageSize)
-               .ToListAsync();
+            if (!string.IsNullOrWhiteSpace(searchQuery))
+            {
+                query = query.Where(m => m.Title.ToLower().Contains(searchQuery.ToLower()));
+            }
+
+            return await query.CountAsync();
         }
+
     }
 }

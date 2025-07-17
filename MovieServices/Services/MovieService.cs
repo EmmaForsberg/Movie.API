@@ -20,15 +20,14 @@ namespace MovieServices.Services
 
         public async Task<PagedResult<MovieDto>> GetMoviesAsync(string? name, string? searchQuery, int pageNumber, int pageSize)
         {
-           var total = await uow.MovieRepository.CountTotalItemsAsync();
-            var movies = await uow.MovieRepository.GetPagedMoviesAsync(pageNumber, pageSize);
+            var total = await uow.MovieRepository.CountTotalItemsAsync(searchQuery);
+            var movies = await uow.MovieRepository.GetPagedMoviesAsync(pageNumber, pageSize, searchQuery);
 
             var mappedMovies = mapper.Map<List<MovieDto>>(movies);
 
-
-
             return new PagedResult<MovieDto>(mappedMovies, total, pageNumber, pageSize);
         }
+
 
         public async Task<MovieDto?> GetMovieByIdAsync(int id)
         {

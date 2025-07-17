@@ -1,9 +1,10 @@
 ﻿using MovieCore.DTOs;
+using MovieCore.Helpers;
 
 namespace MovieServiceContracts.Service.Contracts
 {
     public interface IReviewService
     {
-        Task<List<ReviewDto>> GetReviewsForMovieAsync(int movieId);
+        Task<PagedResult<ReviewDto>> GetReviewsForMovieAsync(int movieId, int pageNumber, int pageSize);
     }
 }

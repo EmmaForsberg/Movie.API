@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MovieCore.DTOs;
+using MovieCore.Helpers;
 using MovieServiceContracts.Service.Contracts;
 
 namespace MovieApi.Controllers
@@ -19,13 +20,14 @@ namespace MovieApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<ReviewDto>>> GetReviewsForMovie([FromQuery] int movieId)
+        public async Task<ActionResult<PagedResult<ReviewDto>>> GetReviewsForMovie([FromQuery] int movieId, [FromQuery] PagingParameters pagingParameters)
         {
-            var reviews = await serviceManager.ReviewService.GetReviewsForMovieAsync(movieId);
-            if (reviews == null)
+            var reviewsPaged = await serviceManager.ReviewService.GetReviewsForMovieAsync(movieId, pagingParameters.PageNumber, pagingParameters.PageSize);
+
+            if (reviewsPaged == null)
                 return NotFound(new { message = "Movie not found" });
 
-            return Ok(reviews);
+            return Ok(reviewsPaged);
         }
     }
 }
