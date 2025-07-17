@@ -17,7 +17,7 @@ namespace MovieServices.Services
             this.mapper = mapper;
         }
 
-        public async Task<IEnumerable<MovieDto>> GetMoviesAsync()
+        public async Task<IEnumerable<MovieDto>> GetMoviesAsync(string? name, string? searchQuery, int pageNumber, int pageSize)
         {
             var movies = await uow.MovieRepository.GetAllAsync();
             return mapper.Map<IEnumerable<MovieDto>>(movies);
@@ -95,6 +95,5 @@ namespace MovieServices.Services
 
             return true;
         }
-
     }
 }

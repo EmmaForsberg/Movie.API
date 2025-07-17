@@ -18,9 +18,9 @@ namespace MovieApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MovieDto>>> GetMovies()
+        public async Task<ActionResult<IEnumerable<MovieDto>>> GetMovies(string? name, string? searchQuery, int pageNumber, int pageSize)
         {
-            var moviesdto = await serviceManager.MovieService.GetMoviesAsync();
+            var moviesdto = await serviceManager.MovieService.GetMoviesAsync(name, searchQuery,pageNumber,pageSize);
 
             return Ok(moviesdto);
         }
