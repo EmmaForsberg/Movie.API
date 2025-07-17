@@ -9,6 +9,7 @@ namespace MovieContracts
 {
     public interface IGenreRepository
     {
+        Task<List<Genre>> GetAllAsync();
         Task<Genre?> GetGenreByIdAsync(int genreId);
     }
 }

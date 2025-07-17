@@ -18,6 +18,12 @@ namespace MovieData.Data.Repositories
             _context = context;
         }
 
+        public async Task<List<Genre>> GetAllAsync()
+        {
+            return await _context.Genres.ToListAsync();
+        }
+
+
         public async Task<Genre?> GetGenreByIdAsync(int genreId)
         {
             return await _context.Genres.FirstOrDefaultAsync(g => g.Id == genreId);

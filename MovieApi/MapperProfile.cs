@@ -7,7 +7,7 @@ namespace MovieApi
 {
     public class MapperProfile : Profile
     {
-        public MapperProfile() 
+        public MapperProfile()
         {
             // Enkel mappning Actor -> ActorDto (här måste vi hantera Role från MovieActor separat)
             CreateMap<Actor, ActorDto>()
@@ -53,7 +53,10 @@ namespace MovieApi
 
             CreateMap<MovieActorCreateDto, MovieActor>();
 
+            // Andra mappningar...
+            CreateMap<Genre, GenreDto>();
         }
-
     }
+
+
 }
