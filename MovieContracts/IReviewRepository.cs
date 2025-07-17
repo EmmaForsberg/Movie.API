@@ -13,7 +13,9 @@ namespace MovieContracts
         Task<List<Review>> GetReviewsForMovieAsync(int movieId);
         Task<int> CountReviewsForMovieAsync(int movieId);
         Task<List<Review>> GetPagedReviewsForMovieAsync(int movieId, int pageNumber, int pageSize);
+        void Add(Review review);
 
+        Task<Review?> GetAsync(int id);
     }
 
 

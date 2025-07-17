@@ -36,6 +36,7 @@ namespace MovieApi
 
 
             // Mappa Review -> ReviewDto
+            CreateMap<ReviewCreateDto, Review>();
             CreateMap<Review, ReviewDto>()
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.ReviewerName));
 

@@ -27,6 +27,7 @@ namespace MovieData.Data.Repositories
         }
 
         public async Task CompleteAsync() => await _context.SaveChangesAsync();
+        public async Task SaveAsync() => await _context.SaveChangesAsync();
     }
 }
 

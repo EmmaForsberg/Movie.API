@@ -14,6 +14,8 @@ namespace MovieContracts
         IGenreRepository GenreRepository { get; }
 
         Task CompleteAsync();
+        Task SaveAsync();
+
     }
 
 }

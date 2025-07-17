@@ -29,5 +29,31 @@ namespace MovieApi.Controllers
 
             return Ok(reviewsPaged);
         }
+
+        [HttpPost]
+        public async Task<ActionResult<ReviewDto>> CreateReview(ReviewCreateDto dto)
+        {
+            try
+            {
+                var created = await serviceManager.ReviewService.CreateReviewAsync(dto);
+                return CreatedAtAction(nameof(GetReview), new { id = created.Id }, created);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Problem(statusCode: 400, title: "Business Rule Violation", detail: ex.Message);
+            }
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ReviewDto>> GetReview(int id)
+        {
+            var review = await serviceManager.ReviewService.GetAsync(id);
+
+            if (review == null)
+                return NotFound();
+
+            return Ok(review);
+        }
+
     }
 }

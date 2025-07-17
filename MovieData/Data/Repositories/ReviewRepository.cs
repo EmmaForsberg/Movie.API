@@ -38,5 +38,15 @@ namespace MovieData.Data.Repositories
                 .ToListAsync();
         }
 
+        public void Add(Review review)
+        {
+            _context.Reviews.Add(review);
+        }
+
+        public async Task<Review?> GetAsync(int id)
+        {
+            return await _context.Reviews.FindAsync(id);
+        }
+
     }
 }
