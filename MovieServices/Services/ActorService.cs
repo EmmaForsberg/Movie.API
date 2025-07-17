@@ -42,6 +42,8 @@ namespace MovieServices.Services
             if (actor.MovieActors.Any(ma => ma.MovieId == movieId))
                 throw new InvalidOperationException("Movie already linked to this actor");
 
+    
+
             var movieActor = mapper.Map<MovieActor>(dto);
             movieActor.ActorId = actorId;
             movieActor.MovieId = movieId;

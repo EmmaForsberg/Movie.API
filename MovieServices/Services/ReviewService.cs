@@ -43,6 +43,11 @@ namespace MovieServices.Services
             if (movie.Reviews.Count >= 10)
                 throw new InvalidOperationException("A movie can have at most 10 reviews.");
 
+            // Affärsregel 4: Max 5 recensioner om filmen är äldre än 20 år
+            int age = DateTime.Now.Year - movie.Year;
+            if (age > 20 && movie.Reviews.Count >= 5)
+                throw new InvalidOperationException("Movies older than 20 years can have at most 5 reviews.");
+
             var review = mapper.Map<Review>(dto);
             uow.ReviewRepository.Add(review);
             await uow.SaveAsync();

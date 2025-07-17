@@ -13,6 +13,13 @@ namespace MovieData.Data.Repositories
             _context = context;
         }
 
+        public async Task<Movie?> GetMovieByTitleAsync(string title)
+        {
+            return await _context.Movies
+                .FirstOrDefaultAsync(m => m.Title.ToLower() == title.ToLower());
+        }
+
+
         public async Task<Movie> AddAsync(Movie movie)
         {
             _context.Movies.Add(movie);

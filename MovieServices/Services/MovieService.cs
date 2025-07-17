@@ -43,12 +43,35 @@ namespace MovieServices.Services
 
         public async Task<MovieDetailDto> CreateMovieAsync(MovieCreateDto dto)
         {
+            // Kontrollera om en film med samma titel redan finns (case-insensitivt)
+            var existingMovie = await uow.MovieRepository.GetMovieByTitleAsync(dto.Title);
+            if (existingMovie != null)
+            {
+                throw new InvalidOperationException($"A movie with the title '{dto.Title}' already exists.");
+            }
+
+            // Kontrollera budget
+            if (dto.MovieDetails != null & dto.MovieDetails.Budget < 0)
+                throw new InvalidOperationException("Budget cannot be negative.");
+
             // Kontrollera att genren finns
             var genre = await uow.GenreRepository.GetGenreByIdAsync(dto.GenreId);
             if (genre == null)
             {
                 // Om genren saknas, returnera null för att indikera fel
                 return null;
+            }
+
+            // Affärsregel: Dokumentär får inte ha budget över 1 miljon och fler än 10 skådespelare
+            if ((genre.Name.ToLower() == "dokumentär" || genre.Name.ToLower() == "documentary"))
+            {
+                int actorCount = dto.Actors?.Count ?? 0;
+                int budget = dto.MovieDetails?.Budget ?? 0;
+
+                if (budget > 1_000_000 && actorCount > 10)
+                {
+                    throw new InvalidOperationException("A documentary movie cannot have a budget over 1 million and more than 10 actors.");
+                }
             }
 
             var movie = mapper.Map<Movie>(dto);

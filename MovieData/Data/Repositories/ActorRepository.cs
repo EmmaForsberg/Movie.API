@@ -22,6 +22,7 @@ namespace MovieData.Data.Repositories
         {
             return await _context.Actors
        .Include(a => a.MovieActors)
+            .ThenInclude(ma => ma.Movie)
        .FirstOrDefaultAsync(a => a.Id == actorId);
         }
 

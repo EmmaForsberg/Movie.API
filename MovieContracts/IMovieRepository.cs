@@ -7,7 +7,7 @@ namespace MovieContracts
         Task<IEnumerable<Movie>> GetAllAsync();
         Task<Movie?> GetAsync(int id);
         Task<bool> AnyAsync(int id);
-
+        Task<Movie?> GetMovieByTitleAsync(string title);
         Task<Movie?> GetMovieWithDetailsAsync(int id);
         Task<Movie> AddAsync(Movie movie);
         void Update(Movie movie);
