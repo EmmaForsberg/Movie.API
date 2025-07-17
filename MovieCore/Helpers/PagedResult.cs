@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MovieCore.Helpers
 {
-    internal class PagedResult<T>
+    public class PagedResult<T>
     {
         public List<T> Items { get; set; }
         public int totalItems { get; set; }

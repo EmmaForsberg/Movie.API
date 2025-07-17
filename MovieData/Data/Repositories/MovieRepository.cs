@@ -81,5 +81,21 @@ namespace MovieData.Data.Repositories
         {
             _context.Movies.Remove(movie);
         }
+
+        public async Task<int> CountTotalItemsAsync()
+        {
+           return await _context.Movies.CountAsync();
+        }
+
+        public async Task<List<Movie>> GetPagedMoviesAsync(int pageNumber, int pageSize)
+        {
+            int skipAmount = (pageNumber - 1) * pageSize;
+
+            return await _context.Movies
+               .Include(m => m.Genre)
+               .Skip(skipAmount)
+               .Take(pageSize)
+               .ToListAsync();
+        }
     }
 }

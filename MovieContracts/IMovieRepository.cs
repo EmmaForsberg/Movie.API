@@ -13,6 +13,11 @@ namespace MovieContracts
         void Update(Movie movie);
         Task<Movie?> GetMovieForDeleteAsync(int id);
         void Remove(Movie movie);
+        Task<int> CountTotalItemsAsync();
+
+        Task<List<Movie>> GetPagedMoviesAsync(int pageNumber, int pageSize);
+
+
 
     }
 }

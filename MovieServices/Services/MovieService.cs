@@ -3,6 +3,7 @@ using MovieContracts;
 using MovieCore.DTOs;
 using MovieCore.Entities;
 using MovieServiceContracts.Service.Contracts;
+using MovieCore.Helpers;
 
 namespace MovieServices.Services
 {
@@ -17,10 +18,16 @@ namespace MovieServices.Services
             this.mapper = mapper;
         }
 
-        public async Task<IEnumerable<MovieDto>> GetMoviesAsync(string? name, string? searchQuery, int pageNumber, int pageSize)
+        public async Task<PagedResult<MovieDto>> GetMoviesAsync(string? name, string? searchQuery, int pageNumber, int pageSize)
         {
-            var movies = await uow.MovieRepository.GetAllAsync();
-            return mapper.Map<IEnumerable<MovieDto>>(movies);
+           var total = await uow.MovieRepository.CountTotalItemsAsync();
+            var movies = await uow.MovieRepository.GetPagedMoviesAsync(pageNumber, pageSize);
+
+            var mappedMovies = mapper.Map<List<MovieDto>>(movies);
+
+
+
+            return new PagedResult<MovieDto>(mappedMovies, total, pageNumber, pageSize);
         }
 
         public async Task<MovieDto?> GetMovieByIdAsync(int id)
