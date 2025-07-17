@@ -4,6 +4,7 @@ using MovieCore.DTOs;
 using MovieCore.Entities;
 using MovieServiceContracts.Service.Contracts;
 using MovieCore.Helpers;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace MovieServices.Services
 {
@@ -135,6 +136,37 @@ namespace MovieServices.Services
             await uow.CompleteAsync();
 
             return true;
+        }
+
+        public async Task<Movie?> GetMovieWithDetailsAsync(int id)
+        {
+            return await uow.MovieRepository.GetMovieWithDetailsAsync(id);
+        }
+
+        public async Task<bool> PatchMovieAsync(int id, MoviePatchDto patchedDto)
+        {
+            var movie = await uow.MovieRepository.GetMovieWithDetailsAsync(id);
+            if (movie == null)
+                return false;
+
+            // Mappa patchad DTO tillbaka till entity
+            mapper.Map(patchedDto, movie);
+
+            // Gör eventuella affärsregler/kontroller här (ex. budget ej negativ)
+
+            uow.MovieRepository.Update(movie);
+            await uow.CompleteAsync();
+
+            return true;
+        }
+
+        public async Task<MoviePatchDto?> GetMoviePatchDtoAsync(int id)
+        {
+            var movie = await uow.MovieRepository.GetMovieWithDetailsAsync(id);
+            if (movie == null)
+                return null;
+
+            return mapper.Map<MoviePatchDto>(movie);
         }
     }
 }

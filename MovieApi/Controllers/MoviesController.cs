@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc;
 using MovieCore.DTOs;
 using MovieCore.Helpers;
 using MovieServiceContracts.Service.Contracts;
@@ -104,5 +105,29 @@ namespace MovieApi.Controllers
 
             return NoContent();
         }
+
+        //PATCH
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> PatchMovie(int id, JsonPatchDocument<MoviePatchDto> patchDoc)
+        {
+            if (patchDoc == null)
+                return BadRequest();
+
+            var movieToPatch = await serviceManager.MovieService.GetMoviePatchDtoAsync(id);
+            if (movieToPatch == null)
+                return NotFound();
+
+            patchDoc.ApplyTo(movieToPatch, ModelState);
+
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var success = await serviceManager.MovieService.PatchMovieAsync(id, movieToPatch);
+            if (!success)
+                return NotFound();
+
+            return NoContent();
+        }
+
     }
 }

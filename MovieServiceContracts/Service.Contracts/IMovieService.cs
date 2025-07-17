@@ -1,4 +1,6 @@
-﻿using MovieCore.DTOs;
+﻿using Microsoft.AspNetCore.JsonPatch;
+using MovieCore.DTOs;
+using MovieCore.Entities;
 using MovieCore.Helpers;
 
 
@@ -12,5 +14,9 @@ namespace MovieServiceContracts.Service.Contracts
         Task<MovieDetailDto> CreateMovieAsync(MovieCreateDto dto);
         Task<bool> UpdateMovieAsync(int id, MovieUpdateDto dto);
         Task<bool> DeleteMovieAsync(int id);
+        Task<Movie?> GetMovieWithDetailsAsync(int id);
+        Task<bool> PatchMovieAsync(int id, MoviePatchDto patchedDto);
+        Task<MoviePatchDto?> GetMoviePatchDtoAsync(int id);
+
     }
 }

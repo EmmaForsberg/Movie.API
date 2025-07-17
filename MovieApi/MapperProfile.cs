@@ -56,6 +56,18 @@ namespace MovieApi
 
             // Andra mappningar...
             CreateMap<Genre, GenreDto>();
+
+            // Movie -> MovieUpdateDto (för att läsa från databas och applicera patch på DTO)
+            CreateMap<Movie, MovieUpdateDto>()
+                .ForMember(dest => dest.MovieDetails, opt => opt.MapFrom(src => src.MovieDetails))
+                .ForMember(dest => dest.Actors, opt => opt.Ignore()); // om du inte patchar actors
+
+            // MovieDetails <-> MovieDetailsCreateDto (tvåvägs)
+            CreateMap<MovieDetails, MovieDetailsCreateDto>().ReverseMap();
+
+            CreateMap<Movie, MoviePatchDto>().ReverseMap();
+            CreateMap<MovieDetails, MovieDetailsPatchDto>().ReverseMap();
+
         }
     }
 
