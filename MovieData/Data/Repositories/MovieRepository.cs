@@ -81,10 +81,9 @@ namespace MovieData.Data.Repositories
         {
             _context.Movies.Remove(movie);
         }
-
         public async Task<List<Movie>> GetPagedMoviesAsync(int pageNumber, int pageSize, string? searchQuery)
         {
-            var query = _context.Movies.AsQueryable();
+            var query = _context.Movies.Include(m => m.Genre).AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(searchQuery))
             {
@@ -96,6 +95,7 @@ namespace MovieData.Data.Repositories
                 .Take(pageSize)
                 .ToListAsync();
         }
+
 
         public async Task<int> CountTotalItemsAsync(string? searchQuery)
         {

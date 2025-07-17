@@ -1,9 +1,9 @@
-﻿using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Bogus;
+﻿using Bogus;
 using Microsoft.EntityFrameworkCore;
-using MovieCore.Entities;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using MovieCore.Entities;
 using MovieData.Data;
 
 namespace MovieData.Services
@@ -150,7 +150,8 @@ namespace MovieData.Services
                new Genre { Name = "Drama" },
                new Genre { Name = "Sci-Fi" },
                new Genre { Name = "Romance" },
-               new Genre { Name = "Comedy" }
+               new Genre { Name = "Comedy" },
+               new Genre {Name = "Documentary"}
             };
         }
 

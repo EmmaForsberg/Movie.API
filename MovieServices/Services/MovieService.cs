@@ -43,7 +43,19 @@ namespace MovieServices.Services
 
         public async Task<MovieDetailDto> CreateMovieAsync(MovieCreateDto dto)
         {
+            // Kontrollera att genren finns
+            var genre = await uow.GenreRepository.GetGenreByIdAsync(dto.GenreId);
+            if (genre == null)
+            {
+                // Om genren saknas, returnera null för att indikera fel
+                return null;
+            }
+
             var movie = mapper.Map<Movie>(dto);
+
+            movie.GenreId = dto.GenreId;
+            movie.Genre = genre;
+
             movie.MovieActors = new List<MovieActor>();
 
             var savedMovie = await uow.MovieRepository.AddAsync(movie);

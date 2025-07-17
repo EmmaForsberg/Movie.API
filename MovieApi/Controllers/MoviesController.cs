@@ -65,7 +65,19 @@ namespace MovieApi.Controllers
         public async Task<ActionResult<MovieDetailDto>> PostMovie(MovieCreateDto dto)
         {
             var result = await serviceManager.MovieService.CreateMovieAsync(dto);
-            return CreatedAtAction(nameof(GetMovieDetails), new { id = result.Id }, result);
+            if (result == null)
+            {
+                // Returnera ProblemDetails med 400 Bad Request och förklaring
+                var problemDetails = new ProblemDetails
+                {
+                    Status = StatusCodes.Status400BadRequest,
+                    Title = "Invalid Genre",
+                    Detail = $"Genre with id {dto.GenreId} does not exist."
+                };
+
+                return BadRequest(problemDetails);
+            }
+                return CreatedAtAction(nameof(GetMovieDetails), new { id = result.Id }, result);
         }
 
         // PUT: api/Movies/5

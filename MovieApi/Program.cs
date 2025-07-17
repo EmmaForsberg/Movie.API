@@ -32,6 +32,8 @@ namespace MovieApi
             builder.Services.AddScoped<IMovieRepository, MovieRepository>();
             builder.Services.AddScoped<IActorRepository, ActorRepository>();
             builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+            builder.Services.AddScoped<IGenreRepository, GenreRepository>();
+
 
             builder.Services.AddControllers()
             .AddNewtonsoftJson();
