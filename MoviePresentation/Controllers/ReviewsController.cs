@@ -3,7 +3,7 @@ using MovieCore.DTOs;
 using MovieCore.Helpers;
 using MovieServiceContracts.Service.Contracts;
 
-namespace MovieApi.Controllers
+namespace MoviePresentation.Controllers
 {
 
     [Route("api/movies/{movieId}/reviews")]
@@ -40,7 +40,12 @@ namespace MovieApi.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                return Problem(statusCode: 400, title: "Business Rule Violation", detail: ex.Message);
+                return BadRequest(new
+                {
+                    title = "Business Rule Violation",
+                    detail = ex.Message,
+                    status = 400
+                });
             }
         }
 

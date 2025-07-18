@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.JsonPatch;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using MovieCore.DTOs;
 using MovieCore.Helpers;
 using MovieServiceContracts.Service.Contracts;
 
-namespace MovieApi.Controllers
+namespace  MoviePresentation.Controllers
+
 {
     [Route("api/movies")]
     [ApiController]

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MovieCore.DTOs;
 using MovieServiceContracts.Service.Contracts;
 
-namespace MovieApi.Controllers
+namespace MoviePresentation.Controllers
 {
     [Route("api/genres")]
     [ApiController]

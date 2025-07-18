@@ -1,5 +1,6 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
+using MoviePresentation.Controllers;
 using MovieContracts;
 using MovieData.Data;
 using MovieData.Data.Repositories;
@@ -36,7 +37,11 @@ namespace MovieApi
 
 
             builder.Services.AddControllers()
-            .AddNewtonsoftJson();
+                 .AddApplicationPart(typeof(MoviesController).Assembly)
+                 .AddApplicationPart(typeof(ActorsController).Assembly)
+                 .AddApplicationPart(typeof(GenresController).Assembly)
+                 .AddApplicationPart(typeof(ReviewsController).Assembly)
+                 .AddNewtonsoftJson();
 
 
             builder.Services.AddEndpointsApiExplorer();
